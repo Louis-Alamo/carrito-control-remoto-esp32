@@ -1,22 +1,25 @@
 #include <Arduino.h>
-#include "WifiManager.h" // ¡Importamos nuestra nueva clase!
+#include "WifiManager.h"   // ¡Nuestro Ladrillo #1!
+#include "ServerManager.h" // ¡Nuestro Ladrillo #2!
 
-// "Contratamos" al gerente, creamos una instancia
+// "Contratamos" a los dos gerentes:
 WifiManager wifiManager;
+ServerManager serverManager;
 
 void setup()
 {
   Serial.begin(115200);
-  Serial.println("\n--- Prueba de Ladrillo #1: WifiManager ---");
+  Serial.println("\n--- Iniciando Ladrillo #1 y #2 ---");
 
-  // Le damos la orden de empezar
-  wifiManager.setup();
+  // El Dueño da las órdenes de arranque:
+  wifiManager.setup();   // 1. "Gerente de Sala, abre la cafetería (AP)"
+  serverManager.setup(); // 2. "Jefe de Cocina, abre la cocina (Servidor)"
 
-  Serial.println("--- Prueba de WiFi terminada ---");
-  Serial.println("El AP 'Carrito_ESP32' debería estar visible.");
+  Serial.println("--- Sistema Listo ---");
+  Serial.println("Deberías poder ver la red Y la página web.");
 }
 
 void loop()
 {
-  // El dueño se va a dormir, el gerente ya hizo su trabajo.
+  // El Dueño se va. Los gerentes se quedan trabajando solos.
 }
