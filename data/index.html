@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Control de Carrito</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="header">
+    <h1>🏎️ Control de Carrito ESP32</h1>
+  </div>
+  
+  <div class="control-container">
+    <!-- Sección de Volante -->
+    <div class="steering-section">
+      <div class="steering-wheel" id="steeringWheel">
+        <div class="wheel-spoke"></div>
+        <div class="wheel-spoke"></div>
+        <div class="wheel-spoke"></div>
+        <div class="wheel-spoke"></div>
+        <div class="wheel-center">ESP32</div>
+      </div>
+      <div class="angle-display">
+        <div>Dirección</div>
+        <div id="angleValue">0°</div>
+      </div>
+    </div>
+    
+    <!-- Sección de Pedales -->
+    <div class="pedals-section">
+      <!-- Acelerador -->
+      <div class="pedal-container">
+        <div class="pedal-label accelerator-label">⚡ Acelerador</div>
+        <div class="pedal accelerator" id="accelerator">
+          <div class="pedal-fill accelerator-fill" id="acceleratorFill"></div>
+          <div class="pedal-value accelerator-value" id="acceleratorValue">0%</div>
+        </div>
+      </div>
+      
+      <!-- Freno -->
+      <div class="pedal-container">
+        <div class="pedal-label brake-label">🛑 Freno</div>
+        <div class="pedal brake" id="brake">
+          <div class="pedal-fill brake-fill" id="brakeFill"></div>
+          <div class="pedal-value brake-value" id="brakeValue">0%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="status-bar">
+    <div class="status-item">Estado: <span id="status">Conectado</span></div>
+    <div class="status-item">Modo: <span id="mode">Manual</span></div>
+  </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
