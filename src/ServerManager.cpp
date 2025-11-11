@@ -1,17 +1,12 @@
 #include "ServerManager.h"
-#include <SPIFFS.h>  // ¡Importante! Necesita la "bodega"
-#include <Arduino.h> // Para Serial.println
+#include <SPIFFS.h>
+#include <Arduino.h>
 
-// --- El Constructor ---
-// Aquí le decimos que el "horno" (servidor) que posee
-// debe funcionar en el puerto 80
 ServerManager::ServerManager() : server(80)
 {
-    // El ": server(80)" es la forma C++ de inicializar
-    // la variable 'server' de nuestra clase.
+    // El constructor sigue igual
 }
 
-// --- La Función de Arranque ---
 void ServerManager::setup()
 {
 
@@ -24,15 +19,13 @@ void ServerManager::setup()
     }
     Serial.println("Bodega montada.");
 
-    // 2. Preparar el "mostrador" (Ruta Estática)
-    // Esta es la única responsabilidad de este servidor:
-    // "Cualquier pedido, búscalo en SPIFFS.
-    //  Si piden la raíz '/', dales 'index.html'"
-    server.serveStatic("/", SPIFFS, "/")
-        .setDefaultFile("index.html");
+    // 2. ¡DELEGAR!
+    // El Jefe de Cocina le pasa el "horno" (server)
+    // a su "Cocinero" (routesController) para que él configure todo.
+    Serial.println("Llamando al Cocinero (RoutesController)...");
+    routesController.setup(server); // <-- ¡Aquí está la magia!
 
-    // 3. Abrir el "restaurante" (Iniciar el servidor)
+    // 3. Abrir el "restaurante"
     server.begin();
     Serial.println("Servidor web (Jefe de Cocina) iniciado.");
-    Serial.println("Sirviendo página estática en la raíz /");
 }

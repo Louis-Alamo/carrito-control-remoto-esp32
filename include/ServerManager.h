@@ -1,16 +1,14 @@
 #pragma once
-#include <ESPAsyncWebServer.h> // ¡Importante! Necesita saber qué es un servidor
+#include <ESPAsyncWebServer.h>
+#include "RoutesController.h" // <-- ¡Ahora conoce el "contrato" del Cocinero!
 
 class ServerManager
 {
 private:
-    // ¡El Jefe de Cocina es DUEÑO de su "horno" (el servidor)!
     AsyncWebServer server;
+    RoutesController routesController; // <-- ¡El Jefe de Cocina TIENE UN Cocinero!
 
 public:
-    // Constructor: Se usa para inicializar el servidor
     ServerManager();
-
-    // Función de arranque
     void setup();
 };
