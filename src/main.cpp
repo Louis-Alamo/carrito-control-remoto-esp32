@@ -1,18 +1,22 @@
 #include <Arduino.h>
+#include "WifiManager.h" // ¡Importamos nuestra nueva clase!
 
-// put function declarations here:
-int myFunction(int, int);
+// "Contratamos" al gerente, creamos una instancia
+WifiManager wifiManager;
 
-void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+void setup()
+{
+  Serial.begin(115200);
+  Serial.println("\n--- Prueba de Ladrillo #1: WifiManager ---");
+
+  // Le damos la orden de empezar
+  wifiManager.setup();
+
+  Serial.println("--- Prueba de WiFi terminada ---");
+  Serial.println("El AP 'Carrito_ESP32' debería estar visible.");
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+void loop()
+{
+  // El dueño se va a dormir, el gerente ya hizo su trabajo.
 }
