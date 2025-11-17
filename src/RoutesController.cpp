@@ -1,36 +1,42 @@
-#include "RoutesController.h" // Incluye su propio "contrato"
-#include <SPIFFS.h>           // Necesita la "bodega"
-#include <Arduino.h>          // Para Serial
+#include "RoutesController.h"
+#include <SPIFFS.h>
+#include <Arduino.h>
 
-void RoutesController::setup(AsyncWebServer &server)
+// El controlador recibe el servidor Y el servicio
+void RoutesController::setup(AsyncWebServer &server, CarritoService &service)
 {
 
-    // --- RESPONSABILIDAD #1: Servir la página web ---
-    // (Esto antes lo hacía el ServerManager, ahora lo hace el cocinero)
-    server.serveStatic("/", SPIFFS, "/")
-        .setDefaultFile("index.html");
+    server.serveStatic("/", SPIFFS, "/").setDefaultFile("index.html");
 
-    // --- RESPONSABILIDAD #2: Atender pedidos (API) ---
-    server.on("/adelante", HTTP_GET, [](AsyncWebServerRequest *request)
+    // --- RUTAS API ---
+
+    server.on("/adelante", HTTP_GET, [&service](AsyncWebServerRequest *request)
               {
-        Serial.println("¡Comando 'Adelante' recibido!");
-        // Aquí irá la lógica para mover el motor
+        service.procesarAdelante(); // Delegamos al servicio
         request->send(200, "text/plain", "OK"); });
 
-    server.on("/atras", HTTP_GET, [](AsyncWebServerRequest *request)
+    server.on("/atras", HTTP_GET, [&service](AsyncWebServerRequest *request)
               {
-        Serial.println("¡Comando 'Atrás' recibido!");
+        service.procesarAtras();
         request->send(200, "text/plain", "OK"); });
 
-    server.on("/izquierda", HTTP_GET, [](AsyncWebServerRequest *request)
+    server.on("/izquierda", HTTP_GET, [&service](AsyncWebServerRequest *request)
               {
-        Serial.println("¡Comando 'Izquierda' recibido!");
+        service.procesarIzquierda();
         request->send(200, "text/plain", "OK"); });
 
-    server.on("/derecha", HTTP_GET, [](AsyncWebServerRequest *request)
+    server.on("/derecha", HTTP_GET, [&service](AsyncWebServerRequest *request)
               {
-        Serial.println("¡Comando 'Derecha' recibido!");
+        service.procesarDerecha();
         request->send(200, "text/plain", "OK"); });
 
-    Serial.println("Cocinero (RoutesController) listo. Todas las rutas configuradas.");
+    // Agregar una ruta para detener si quieres un botón de STOP explícito
+    server.on("/detener", HTTP_GET, [&service](AsyncWebServerRequest *request)
+              {
+        service.procesarDetener();
+        request->send(200, "text/plain", "OK"); });
+
+    // Ojo: En tu JS actual, el "detener" ocurre cuando sueltas el botón
+    // (si implementas lógica de 'mouseup') o con otro botón.
+    // Por ahora tus botones activan movimiento.
 }

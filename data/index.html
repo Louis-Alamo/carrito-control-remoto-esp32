@@ -1,59 +1,148 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Control de Carrito</title>
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="header">
-    <h1>🏎️ Control de Carrito ESP32</h1>
-  </div>
-  
-  <div class="control-container">
-    <!-- Sección de Volante -->
-    <div class="steering-section">
-      <div class="steering-wheel" id="steeringWheel">
-        <div class="wheel-spoke"></div>
-        <div class="wheel-spoke"></div>
-        <div class="wheel-spoke"></div>
-        <div class="wheel-spoke"></div>
-        <div class="wheel-center">ESP32</div>
-      </div>
-      <div class="angle-display">
-        <div>Dirección</div>
-        <div id="angleValue">0°</div>
-      </div>
-    </div>
-    
-    <!-- Sección de Pedales -->
-    <div class="pedals-section">
-      <!-- Acelerador -->
-      <div class="pedal-container">
-        <div class="pedal-label accelerator-label">⚡ Acelerador</div>
-        <div class="pedal accelerator" id="accelerator">
-          <div class="pedal-fill accelerator-fill" id="acceleratorFill"></div>
-          <div class="pedal-value accelerator-value" id="acceleratorValue">0%</div>
-        </div>
-      </div>
-      
-      <!-- Freno -->
-      <div class="pedal-container">
-        <div class="pedal-label brake-label">🛑 Freno</div>
-        <div class="pedal brake" id="brake">
-          <div class="pedal-fill brake-fill" id="brakeFill"></div>
-          <div class="pedal-value brake-value" id="brakeValue">0%</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="status-bar">
-    <div class="status-item">Estado: <span id="status">Conectado</span></div>
-    <div class="status-item">Modo: <span id="mode">Manual</span></div>
-  </div>
 
-    <script src="script.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Control ESP32</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            /* Evita selección de texto al tocar botones */
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        /* La cuadrícula para los botones */
+        .control-pad {
+            display: grid;
+            grid-template-columns: 100px 100px 100px;
+            grid-template-rows: 100px 100px 100px;
+            gap: 10px;
+        }
+
+        /* Estilo base de los botones */
+        .btn {
+            width: 100%;
+            height: 100%;
+            background-color: #444;
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            /* Para que funcionen rápido en móviles */
+            touch-action: manipulation;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Efecto al presionar */
+        .btn:active,
+        .btn.active {
+            background-color: #00d2ff;
+            color: #000;
+            transform: scale(0.95);
+        }
+
+        /* Posicionamiento en la cuadrícula */
+        #btnAdelante {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        #btnIzquierda {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        #btnDerecha {
+            grid-column: 3;
+            grid-row: 2;
+        }
+
+        #btnAtras {
+            grid-column: 2;
+            grid-row: 3;
+        }
+
+        #btnStop {
+            grid-column: 2;
+            grid-row: 2;
+            background-color: #a00;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Control Remoto</h1>
+
+    <div class="control-pad">
+        <button id="btnAdelante" class="btn">▲</button>
+        <button id="btnIzquierda" class="btn">◄</button>
+        <button id="btnStop" class="btn">🛑</button>
+        <button id="btnDerecha" class="btn">►</button>
+        <button id="btnAtras" class="btn">▼</button>
+    </div>
+
+    <p style="margin-top:20px; color:#888;">Mantén presionado para mover</p>
+
+    <script>
+        // --- Lógica de Control ---
+
+        function enviarComando(accion) {
+            console.log("Enviando: " + accion);
+            fetch('/' + accion).catch(err => console.error(err));
+        }
+
+        // Asigna eventos a un botón (para PC y Móvil)
+        function configurarBoton(id, comando) {
+            const btn = document.getElementById(id);
+
+            // Eventos para Mouse (PC)
+            btn.addEventListener('mousedown', () => enviarComando(comando));
+            btn.addEventListener('mouseup', () => enviarComando('detener'));
+            btn.addEventListener('mouseleave', () => enviarComando('detener')); // Si sacas el mouse del botón
+
+            // Eventos Táctiles (Móvil) - ¡Cruciales!
+            btn.addEventListener('touchstart', (e) => {
+                e.preventDefault(); // Evita scroll o zoom
+                enviarComando(comando);
+                btn.classList.add('active'); // Efecto visual manual
+            });
+
+            btn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                enviarComando('detener');
+                btn.classList.remove('active');
+            });
+        }
+
+        // Configuramos los 4 botones
+        configurarBoton('btnAdelante', 'adelante');
+        configurarBoton('btnAtras', 'atras');
+        configurarBoton('btnIzquierda', 'izquierda');
+        configurarBoton('btnDerecha', 'derecha');
+
+        // El botón central de STOP es un "kill switch" manual
+        document.getElementById('btnStop').addEventListener('click', () => enviarComando('detener'));
+
+    </script>
 </body>
+
 </html>

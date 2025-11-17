@@ -1,14 +1,20 @@
 #pragma once
 #include <ESPAsyncWebServer.h>
-#include "RoutesController.h" // <-- ¡Ahora conoce el "contrato" del Cocinero!
+#include "RoutesController.h"
+#include "CarritoService.h" // <--- 1. IMPORTANTE: Incluir esto
 
 class ServerManager
 {
 private:
     AsyncWebServer server;
-    RoutesController routesController; // <-- ¡El Jefe de Cocina TIENE UN Cocinero!
+    RoutesController routesController;
+
+    // 2. IMPORTANTE: Variable para guardar al Gerente
+    CarritoService &service;
 
 public:
-    ServerManager();
+    // 3. IMPORTANTE: El constructor ahora pide el servicio
+    ServerManager(CarritoService &service);
+
     void setup();
 };
