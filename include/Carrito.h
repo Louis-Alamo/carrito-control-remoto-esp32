@@ -17,4 +17,10 @@ public:
     void girarIzquierda(int velocidad);
     void girarDerecha(int velocidad);
     void detener();
+
+    // --- Control Diferencial ---
+    // Control independiente de cada motor (permite aceleración + giro)
+    // velocidad: -255 a 255 (negativo = atrás, positivo = adelante)
+    void setMotorIzquierdo(int velocidad);
+    void setMotorDerecho(int velocidad);
 };

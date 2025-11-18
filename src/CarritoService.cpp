@@ -3,9 +3,10 @@
 
 CarritoService::CarritoService(Carrito &carrito) : carrito(carrito)
 {
-    enMovimiento = false;
+    velocidadAdelante = 0;
+    ajusteGiro = 0;
     enModoBoost = false;
-    estadoActual = PARADO;
+    inicioMovimiento = 0;
 }
 
 void CarritoService::setup()
@@ -13,96 +14,122 @@ void CarritoService::setup()
     carrito.setup();
 }
 
-// --- MÉTODOS DE PROCESAMIENTO ---
-// Todos siguen el mismo patrón: Activar movimiento, activar boost, guardar hora.
+// --- MÉTODO INTERNO: COMBINA VELOCIDAD Y GIRO ---
+void CarritoService::aplicarVelocidades()
+{
+    // Calcular velocidad base (con boost o crucero)
+    int velBase = enModoBoost ? VEL_ADELANTE : VEL_CRUCERO;
+    int velGiro = enModoBoost ? VEL_GIRO : VEL_GIRO_CRUCERO;
+
+    // Si no hay movimiento, detener
+    if (velocidadAdelante == 0 && ajusteGiro == 0)
+    {
+        carrito.detener();
+        return;
+    }
+
+    // Calcular velocidad efectiva (escalar según velocidadAdelante)
+    int velocidadEfectiva = (velocidadAdelante * velBase) / 255;
+
+    // Calcular ajuste de giro (escalar según ajusteGiro)
+    int ajusteEfectivo = (ajusteGiro * velGiro) / 255;
+
+    // Motor izquierdo = velocidad base - ajuste (girar derecha reduce izq)
+    // Motor derecho = velocidad base + ajuste (girar derecha aumenta der)
+    int velIzq = velocidadEfectiva - ajusteEfectivo;
+    int velDer = velocidadEfectiva + ajusteEfectivo;
+
+    // Aplicar a los motores
+    carrito.setMotorIzquierdo(velIzq);
+    carrito.setMotorDerecho(velDer);
+
+    Serial.print("Motor Izq: ");
+    Serial.print(velIzq);
+    Serial.print(" | Motor Der: ");
+    Serial.println(velDer);
+}
+
+// --- COMANDOS ---
 
 void CarritoService::procesarAdelante()
 {
-    enMovimiento = true;
+    velocidadAdelante = 255; // Máximo adelante
     enModoBoost = true;
     inicioMovimiento = millis();
-    estadoActual = ADELANTE;
-
-    Serial.println(">> COMANDO: Adelante (Modo BOOST)");
-    carrito.moverAdelante(VEL_BOOST);
+    aplicarVelocidades();
+    Serial.println(">> COMANDO: Adelante");
 }
 
 void CarritoService::procesarAtras()
 {
-    enMovimiento = true;
+    velocidadAdelante = -255; // Máximo atrás
     enModoBoost = true;
     inicioMovimiento = millis();
-    estadoActual = ATRAS;
-
-    Serial.println(">> COMANDO: Atras (Modo BOOST)");
-    carrito.moverAtras(VEL_BOOST);
+    aplicarVelocidades();
+    Serial.println(">> COMANDO: Atrás");
 }
 
 void CarritoService::procesarIzquierda()
 {
-    enMovimiento = true;
+    ajusteGiro = -255; // Girar a la izquierda
+    if (velocidadAdelante == 0)
+    {
+        // Giro en sitio
+        velocidadAdelante = 128; // Velocidad media para giro
+    }
     enModoBoost = true;
     inicioMovimiento = millis();
-    estadoActual = IZQ;
-
-    Serial.println(">> COMANDO: Izquierda (Modo BOOST)");
-    carrito.girarIzquierda(VEL_BOOST);
+    aplicarVelocidades();
+    Serial.println(">> COMANDO: Izquierda");
 }
 
 void CarritoService::procesarDerecha()
 {
-    enMovimiento = true;
+    ajusteGiro = 255; // Girar a la derecha
+    if (velocidadAdelante == 0)
+    {
+        // Giro en sitio
+        velocidadAdelante = 128; // Velocidad media para giro
+    }
     enModoBoost = true;
     inicioMovimiento = millis();
-    estadoActual = DER;
-
-    Serial.println(">> COMANDO: Derecha (Modo BOOST)");
-    carrito.girarDerecha(VEL_BOOST);
+    aplicarVelocidades();
+    Serial.println(">> COMANDO: Derecha");
 }
 
 void CarritoService::procesarDetener()
 {
-    enMovimiento = false;
+    velocidadAdelante = 0;
+    ajusteGiro = 0;
     enModoBoost = false;
-    estadoActual = PARADO;
-
-    Serial.println("|| COMANDO: Detener");
     carrito.detener();
+    Serial.println("|| COMANDO: Detener");
 }
 
-// --- EL BUCLE DE CONTROL ---
+// --- BUCLE DE CONTROL ---
 void CarritoService::loop()
 {
-    // Solo trabajamos si nos estamos moviendo y seguimos en modo boost
-    if (enMovimiento && enModoBoost)
+    // Transición de boost a crucero
+    if (enModoBoost && millis() - inicioMovimiento > TIEMPO_BOOST)
     {
-
-        // Checamos el reloj
-        if (millis() - inicioMovimiento > TIEMPO_BOOST)
-        {
-
-            // ¡Tiempo cumplido! Bajamos la potencia
-            enModoBoost = false;
-            Serial.println("vvv CRUCERO: Bajando velocidad para ahorrar energía");
-
-            // Reaplicamos el movimiento actual pero con velocidad CRUCERO
-            switch (estadoActual)
-            {
-            case ADELANTE:
-                carrito.moverAdelante(VEL_CRUCERO);
-                break;
-            case ATRAS:
-                carrito.moverAtras(VEL_CRUCERO);
-                break;
-            case IZQ:
-                carrito.girarIzquierda(VEL_CRUCERO);
-                break;
-            case DER:
-                carrito.girarDerecha(VEL_CRUCERO);
-                break;
-            default:
-                break;
-            }
-        }
+        enModoBoost = false;
+        Serial.println("vvv CRUCERO: Bajando velocidad");
+        aplicarVelocidades(); // Reaplicar con velocidad crucero
     }
+}
+
+// --- CONTROL DIFERENCIAL DIRECTO ---
+
+void CarritoService::setVelocidadAdelante(int vel)
+{
+    velocidadAdelante = constrain(vel, -255, 255);
+    enModoBoost = true;
+    inicioMovimiento = millis();
+    aplicarVelocidades();
+}
+
+void CarritoService::setAjusteGiro(int giro)
+{
+    ajusteGiro = constrain(giro, -255, 255);
+    aplicarVelocidades();
 }

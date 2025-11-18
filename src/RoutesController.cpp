@@ -36,7 +36,29 @@ void RoutesController::setup(AsyncWebServer &server, CarritoService &service)
         service.procesarDetener();
         request->send(200, "text/plain", "OK"); });
 
-    // Ojo: En tu JS actual, el "detener" ocurre cuando sueltas el botón
-    // (si implementas lógica de 'mouseup') o con otro botón.
-    // Por ahora tus botones activan movimiento.
+    // Nuevo endpoint: Control diferencial con parámetros
+    // Ejemplo: /control?v=255&g=120
+    // v = velocidad adelante (-255 a 255)
+    // g = ajuste giro (-255 a 255)
+    server.on("/control", HTTP_GET, [&service](AsyncWebServerRequest *request)
+              {
+        int velocidad = 0;
+        int giro = 0;
+        
+        if (request->hasParam("v")) {
+            velocidad = request->getParam("v")->value().toInt();
+        }
+        if (request->hasParam("g")) {
+            giro = request->getParam("g")->value().toInt();
+        }
+        
+        service.setVelocidadAdelante(velocidad);
+        service.setAjusteGiro(giro);
+        
+        Serial.print("Control diferencial - Vel: ");
+        Serial.print(velocidad);
+        Serial.print(" Giro: ");
+        Serial.println(giro);
+        
+        request->send(200, "text/plain", "OK"); });
 }

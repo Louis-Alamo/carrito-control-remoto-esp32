@@ -79,3 +79,61 @@ void Carrito::detener()
     digitalWrite(PIN_MOTOR_B_IN3, LOW);
     digitalWrite(PIN_MOTOR_B_IN4, LOW);
 }
+
+// --- CONTROL DIFERENCIAL ---
+
+void Carrito::setMotorIzquierdo(int velocidad)
+{
+    // Limitar rango
+    velocidad = constrain(velocidad, -255, 255);
+
+    if (velocidad > 0)
+    {
+        // Adelante
+        digitalWrite(PIN_MOTOR_A_IN1, HIGH);
+        digitalWrite(PIN_MOTOR_A_IN2, LOW);
+        analogWrite(PIN_MOTOR_A_ENA, velocidad);
+    }
+    else if (velocidad < 0)
+    {
+        // Atrás
+        digitalWrite(PIN_MOTOR_A_IN1, LOW);
+        digitalWrite(PIN_MOTOR_A_IN2, HIGH);
+        analogWrite(PIN_MOTOR_A_ENA, -velocidad);
+    }
+    else
+    {
+        // Detenido
+        digitalWrite(PIN_MOTOR_A_IN1, LOW);
+        digitalWrite(PIN_MOTOR_A_IN2, LOW);
+        analogWrite(PIN_MOTOR_A_ENA, 0);
+    }
+}
+
+void Carrito::setMotorDerecho(int velocidad)
+{
+    // Limitar rango
+    velocidad = constrain(velocidad, -255, 255);
+
+    if (velocidad > 0)
+    {
+        // Adelante
+        digitalWrite(PIN_MOTOR_B_IN3, HIGH);
+        digitalWrite(PIN_MOTOR_B_IN4, LOW);
+        analogWrite(PIN_MOTOR_B_ENB, velocidad);
+    }
+    else if (velocidad < 0)
+    {
+        // Atrás
+        digitalWrite(PIN_MOTOR_B_IN3, LOW);
+        digitalWrite(PIN_MOTOR_B_IN4, HIGH);
+        analogWrite(PIN_MOTOR_B_ENB, -velocidad);
+    }
+    else
+    {
+        // Detenido
+        digitalWrite(PIN_MOTOR_B_IN3, LOW);
+        digitalWrite(PIN_MOTOR_B_IN4, LOW);
+        analogWrite(PIN_MOTOR_B_ENB, 0);
+    }
+}
