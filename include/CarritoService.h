@@ -37,6 +37,6 @@ public:
     void procesarDetener();
 
     // Control diferencial directo
-    void setVelocidadAdelante(int vel);  // -255 a 255
-    void setAjusteGiro(int giro);        // -255 a 255
+    void setVelocidadAdelante(int vel); // -255 a 255
+    void setAjusteGiro(int giro);       // -255 a 255
 };
