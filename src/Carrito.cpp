@@ -1,32 +1,31 @@
 #include "Carrito.h"
-#include "pins.h" // Importamos el mapa de pines
+#include "pins.h"
+#include <Arduino.h>
 
 Carrito::Carrito() {}
 
 void Carrito::setup()
 {
-    // Configuramos todos los pines como SALIDA
     pinMode(PIN_MOTOR_A_ENA, OUTPUT);
     pinMode(PIN_MOTOR_A_IN1, OUTPUT);
     pinMode(PIN_MOTOR_A_IN2, OUTPUT);
     pinMode(PIN_MOTOR_B_ENB, OUTPUT);
     pinMode(PIN_MOTOR_B_IN3, OUTPUT);
     pinMode(PIN_MOTOR_B_IN4, OUTPUT);
-
-    // Estado inicial: Todo detenido
     detener();
 }
 
-// --- MANIOBRAS ---
+// --- MANIOBRAS CORREGIDAS ---
 
 void Carrito::moverAdelante(int velocidad)
 {
-    // Lado Izquierdo (Motor A) - LÓGICA INVERTIDA (LOW/HIGH = Adelante)
-    digitalWrite(PIN_MOTOR_A_IN1, LOW);
-    digitalWrite(PIN_MOTOR_A_IN2, HIGH);
+    // Lado Izquierdo (Motor A) - ¡CAMBIADO A LÓGICA NORMAL!
+    // Si antes iba al revés, ahora esto lo arregla.
+    digitalWrite(PIN_MOTOR_A_IN1, HIGH); // <-- CAMBIADO
+    digitalWrite(PIN_MOTOR_A_IN2, LOW);  // <-- CAMBIADO
     analogWrite(PIN_MOTOR_A_ENA, velocidad);
 
-    // Lado Derecho (Motor B) - LÓGICA NORMAL (HIGH/LOW = Adelante)
+    // Lado Derecho (Motor B) - SE QUEDA IGUAL (Funcionaba bien)
     digitalWrite(PIN_MOTOR_B_IN3, HIGH);
     digitalWrite(PIN_MOTOR_B_IN4, LOW);
     analogWrite(PIN_MOTOR_B_ENB, velocidad);
@@ -34,12 +33,12 @@ void Carrito::moverAdelante(int velocidad)
 
 void Carrito::moverAtras(int velocidad)
 {
-    // Lado Izquierdo (Motor A) - INVERTIDO (HIGH/LOW = Atras)
-    digitalWrite(PIN_MOTOR_A_IN1, HIGH);
-    digitalWrite(PIN_MOTOR_A_IN2, LOW);
+    // Lado Izquierdo (Motor A) - ¡CAMBIADO!
+    digitalWrite(PIN_MOTOR_A_IN1, LOW);  // <-- CAMBIADO
+    digitalWrite(PIN_MOTOR_A_IN2, HIGH); // <-- CAMBIADO
     analogWrite(PIN_MOTOR_A_ENA, velocidad);
 
-    // Lado Derecho (Motor B) - NORMAL (LOW/HIGH = Atras)
+    // Lado Derecho (Motor B) - SE QUEDA IGUAL
     digitalWrite(PIN_MOTOR_B_IN3, LOW);
     digitalWrite(PIN_MOTOR_B_IN4, HIGH);
     analogWrite(PIN_MOTOR_B_ENB, velocidad);
@@ -47,14 +46,12 @@ void Carrito::moverAtras(int velocidad)
 
 void Carrito::girarIzquierda(int velocidad)
 {
-    // Giro tipo tanque: Izq ATRAS, Der ADELANTE
-
-    // Izq Atras (Invertido: HIGH/LOW)
-    digitalWrite(PIN_MOTOR_A_IN1, HIGH);
-    digitalWrite(PIN_MOTOR_A_IN2, LOW);
+    // Izquierda ATRAS (Usamos la nueva lógica de atrás: LOW/HIGH)
+    digitalWrite(PIN_MOTOR_A_IN1, LOW);
+    digitalWrite(PIN_MOTOR_A_IN2, HIGH);
     analogWrite(PIN_MOTOR_A_ENA, velocidad);
 
-    // Der Adelante (Normal: HIGH/LOW)
+    // Derecha ADELANTE
     digitalWrite(PIN_MOTOR_B_IN3, HIGH);
     digitalWrite(PIN_MOTOR_B_IN4, LOW);
     analogWrite(PIN_MOTOR_B_ENB, velocidad);
@@ -62,14 +59,12 @@ void Carrito::girarIzquierda(int velocidad)
 
 void Carrito::girarDerecha(int velocidad)
 {
-    // Giro tipo tanque: Izq ADELANTE, Der ATRAS
-
-    // Izq Adelante (Invertido: LOW/HIGH)
-    digitalWrite(PIN_MOTOR_A_IN1, LOW);
-    digitalWrite(PIN_MOTOR_A_IN2, HIGH);
+    // Izquierda ADELANTE (Usamos la nueva lógica de adelante: HIGH/LOW)
+    digitalWrite(PIN_MOTOR_A_IN1, HIGH);
+    digitalWrite(PIN_MOTOR_A_IN2, LOW);
     analogWrite(PIN_MOTOR_A_ENA, velocidad);
 
-    // Der Atras (Normal: LOW/HIGH)
+    // Derecha ATRAS
     digitalWrite(PIN_MOTOR_B_IN3, LOW);
     digitalWrite(PIN_MOTOR_B_IN4, HIGH);
     analogWrite(PIN_MOTOR_B_ENB, velocidad);
@@ -77,11 +72,8 @@ void Carrito::girarDerecha(int velocidad)
 
 void Carrito::detener()
 {
-    // Acelerador a 0
     analogWrite(PIN_MOTOR_A_ENA, 0);
     analogWrite(PIN_MOTOR_B_ENB, 0);
-
-    // Apagar dirección por seguridad
     digitalWrite(PIN_MOTOR_A_IN1, LOW);
     digitalWrite(PIN_MOTOR_A_IN2, LOW);
     digitalWrite(PIN_MOTOR_B_IN3, LOW);
