@@ -1,7 +1,8 @@
 #include "CarritoService.h"
 #include <Arduino.h>
 
-CarritoService::CarritoService(Carrito &carrito) : carrito(carrito)
+CarritoService::CarritoService(Carrito &carrito, Direccional &direccional)
+    : carrito(carrito), direccional(direccional)
 {
     velocidadAdelante = 0;
     ajusteGiro = 0;
@@ -12,6 +13,7 @@ CarritoService::CarritoService(Carrito &carrito) : carrito(carrito)
 void CarritoService::setup()
 {
     carrito.setup();
+    direccional.setup();
 }
 
 // --- MÉTODO INTERNO: COMBINA VELOCIDAD Y GIRO ---
@@ -132,4 +134,16 @@ void CarritoService::setAjusteGiro(int giro)
 {
     ajusteGiro = constrain(giro, -255, 255);
     aplicarVelocidades();
+}
+
+// --- CONTROL DE DIRECCIONALES ---
+
+void CarritoService::toggleDireccionalIzquierda()
+{
+    direccional.encenderIzquierda();
+}
+
+void CarritoService::toggleDireccionalDerecha()
+{
+    direccional.encenderDerecha();
 }

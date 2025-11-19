@@ -237,6 +237,12 @@ btnHazard.addEventListener('click', () => {
 
 // Direccional izquierda
 btnTurnLeft.addEventListener('click', () => {
+    // Enviar comando al ESP32
+    fetch(BASE_URL + '/direccional/izquierda')
+        .catch(error => {
+            console.error('Error al activar direccional izquierda:', error);
+        });
+    
     turnLeftActive = !turnLeftActive;
     
     if (turnLeftActive) {
@@ -252,6 +258,12 @@ btnTurnLeft.addEventListener('click', () => {
 
 // Direccional derecha
 btnTurnRight.addEventListener('click', () => {
+    // Enviar comando al ESP32
+    fetch(BASE_URL + '/direccional/derecha')
+        .catch(error => {
+            console.error('Error al activar direccional derecha:', error);
+        });
+    
     turnRightActive = !turnRightActive;
     
     if (turnRightActive) {

@@ -1,10 +1,12 @@
 #pragma once
 #include "Carrito.h"
+#include "Direccional.h"
 
 class CarritoService
 {
 private:
     Carrito &carrito;
+    Direccional &direccional;
 
     // --- PARÁMETROS DE TUNING ---
     const int VEL_ADELANTE = 255;            // Velocidad adelante/atrás
@@ -25,7 +27,7 @@ private:
     void aplicarVelocidades();
 
 public:
-    CarritoService(Carrito &carrito);
+    CarritoService(Carrito &carrito, Direccional &direccional);
     void setup();
     void loop();
 
@@ -39,4 +41,8 @@ public:
     // Control diferencial directo
     void setVelocidadAdelante(int vel); // -255 a 255
     void setAjusteGiro(int giro);       // -255 a 255
+
+    // Control de direccionales
+    void toggleDireccionalIzquierda();
+    void toggleDireccionalDerecha();
 };

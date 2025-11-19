@@ -61,4 +61,15 @@ void RoutesController::setup(AsyncWebServer &server, CarritoService &service)
         Serial.println(giro);
         
         request->send(200, "text/plain", "OK"); });
+
+    // --- DIRECCIONALES ---
+    server.on("/direccional/izquierda", HTTP_GET, [&service](AsyncWebServerRequest *request)
+              {
+        service.toggleDireccionalIzquierda();
+        request->send(200, "text/plain", "OK"); });
+
+    server.on("/direccional/derecha", HTTP_GET, [&service](AsyncWebServerRequest *request)
+              {
+        service.toggleDireccionalDerecha();
+        request->send(200, "text/plain", "OK"); });
 }

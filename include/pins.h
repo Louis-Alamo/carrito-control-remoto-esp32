@@ -16,3 +16,9 @@
 #define PIN_MOTOR_B_IN4 13
 
 #define PIN_BUZZER 15 // Pin para el buzzer pasivo
+
+// --- DIRECCIONALES (LEDs) ---
+#define PIN_LED_IZQ_1 32 // LED izquierdo 1
+#define PIN_LED_IZQ_2 33 // LED izquierdo 2
+#define PIN_LED_DER_1 4  // LED derecho 1
+#define PIN_LED_DER_2 2  // LED derecho 2

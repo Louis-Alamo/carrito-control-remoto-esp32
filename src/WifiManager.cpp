@@ -3,7 +3,7 @@
 #include <Arduino.h> // Para poder usar Serial
 
 // Constantes privadas que solo este archivo necesita saber
-const char *ap_ssid = "Carrito_ESP32";
+const char *ap_ssid = "Carrito_ESP32-ALAN";
 const char *ap_password = "password123";
 
 void WifiManager::setup()
