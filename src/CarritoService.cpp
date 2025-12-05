@@ -19,10 +19,6 @@ void CarritoService::setup()
 // --- MÉTODO INTERNO: COMBINA VELOCIDAD Y GIRO ---
 void CarritoService::aplicarVelocidades()
 {
-    // Calcular velocidad base (con boost o crucero)
-    int velBase = enModoBoost ? VEL_ADELANTE : VEL_CRUCERO;
-    int velGiro = enModoBoost ? VEL_GIRO : VEL_GIRO_CRUCERO;
-
     // Si no hay movimiento, detener
     if (velocidadAdelante == 0 && ajusteGiro == 0)
     {
@@ -30,10 +26,11 @@ void CarritoService::aplicarVelocidades()
         return;
     }
 
-    // Calcular velocidad efectiva (escalar según velocidadAdelante)
-    int velocidadEfectiva = (velocidadAdelante * velBase) / 255;
+    // SIEMPRE usar velocidad máxima para adelante/atrás (sin modo crucero)
+    int velocidadEfectiva = velocidadAdelante;
 
-    // Calcular ajuste de giro (escalar según ajusteGiro)
+    // Para giros: usar velocidad reducida si estamos en modo boost, sino crucero
+    int velGiro = enModoBoost ? VEL_GIRO : VEL_GIRO_CRUCERO;
     int ajusteEfectivo = (ajusteGiro * velGiro) / 255;
 
     // Motor izquierdo = velocidad base - ajuste (girar derecha reduce izq)
@@ -55,20 +52,16 @@ void CarritoService::aplicarVelocidades()
 
 void CarritoService::procesarAdelante()
 {
-    velocidadAdelante = 255; // Máximo adelante
-    enModoBoost = true;
-    inicioMovimiento = millis();
+    velocidadAdelante = 255; // Máximo adelante (SIEMPRE 100%)
     aplicarVelocidades();
-    Serial.println(">> COMANDO: Adelante");
+    Serial.println(">> COMANDO: Adelante (100% PWM)");
 }
 
 void CarritoService::procesarAtras()
 {
-    velocidadAdelante = -255; // Máximo atrás
-    enModoBoost = true;
-    inicioMovimiento = millis();
+    velocidadAdelante = -255; // Máximo atrás (SIEMPRE 100%)
     aplicarVelocidades();
-    Serial.println(">> COMANDO: Atrás");
+    Serial.println(">> COMANDO: Atrás (100% PWM)");
 }
 
 void CarritoService::procesarIzquierda()

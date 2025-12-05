@@ -23,19 +23,19 @@ String BluetoothManager::readCommand()
 {
     if (SerialBT.available())
     {
-        String command = SerialBT.readStringUntil('\n');
-        command.trim(); // Eliminar espacios y saltos de línea
+        // Leer UN SOLO carácter (sin esperar salto de línea)
+        char c = SerialBT.read();
 
-        if (command.length() > 0)
+        if (c != '\n' && c != '\r') // Ignorar saltos de línea
         {
-            Serial.print("BT >> Comando recibido: ");
+            String command = String(c);
+            Serial.print("BT >> Comando: ");
             Serial.println(command);
             return command;
         }
     }
     return "";
 }
-
 bool BluetoothManager::available()
 {
     return SerialBT.available();
@@ -43,5 +43,23 @@ bool BluetoothManager::available()
 
 void BluetoothManager::sendResponse(const String &message)
 {
-    SerialBT.println(message);
+    if (SerialBT.connected())
+    {
+        SerialBT.println(message);
+    }
+}
+
+bool BluetoothManager::isConnected()
+{
+    return SerialBT.connected();
+}
+
+void BluetoothManager::clearBuffer()
+{
+    // Limpiar cualquier dato acumulado en el buffer
+    while (SerialBT.available())
+    {
+        SerialBT.read();
+    }
+    Serial.println("Buffer Bluetooth limpiado");
 }

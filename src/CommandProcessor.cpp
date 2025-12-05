@@ -7,48 +7,41 @@ CommandProcessor::CommandProcessor(CarritoService &service) : service(service)
 
 bool CommandProcessor::processCommand(const String &command)
 {
-    // Comandos de movimiento básicos
-    if (command == "W" || command == "ADELANTE")
+    // Comandos de UN SOLO CARÁCTER para mínima latencia
+    if (command == "W")
     {
         service.procesarAdelante();
         return true;
     }
-    else if (command == "S" || command == "ATRAS")
+    else if (command == "S")
     {
         service.procesarAtras();
         return true;
     }
-    else if (command == "A" || command == "IZQUIERDA")
+    else if (command == "A")
     {
         service.procesarIzquierda();
         return true;
     }
-    else if (command == "D" || command == "DERECHA")
+    else if (command == "D")
     {
         service.procesarDerecha();
         return true;
     }
-    else if (command == "STOP" || command == "DETENER")
+    else if (command == "X" || command == " ")
     {
         service.procesarDetener();
         return true;
     }
-    // Direccionales
-    else if (command == "DI" || command == "DIR_IZQ")
+    else if (command == "I")
     {
         service.toggleDireccionalIzquierda();
         return true;
     }
-    else if (command == "DD" || command == "DIR_DER")
+    else if (command == "J")
     {
         service.toggleDireccionalDerecha();
         return true;
-    }
-    // Control diferencial: formato V<velocidad>G<giro>
-    // Ejemplo: V255G-120 (velocidad 255, giro izquierda 120)
-    else if (command.startsWith("V") && command.indexOf("G") > 0)
-    {
-        return processDifferentialCommand(command);
     }
 
     return false; // Comando no reconocido

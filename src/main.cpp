@@ -14,9 +14,10 @@ CarritoService carritoService(carrito, direccional);
 BluetoothManager bluetoothManager;
 CommandProcessor commandProcessor(carritoService);
 
-// Timeout de seguridad
-unsigned long ultimoComando = 0;
-const unsigned long TIMEOUT_COMANDO = 500; // 500ms sin comando = detener
+// Control de conexión Bluetooth
+bool bluetoothWasConnected = false;
+unsigned long ultimaActividad = 0;
+const unsigned long TIMEOUT_INACTIVIDAD = 5000; // 5 segundos sin actividad
 
 void setup()
 {
@@ -35,11 +36,30 @@ void setup()
 
 void loop()
 {
+  // Monitorear estado de conexión Bluetooth
+  bool conectado = bluetoothManager.isConnected();
+
+  // Detectar nueva conexión
+  if (conectado && !bluetoothWasConnected)
+  {
+    Serial.println("✓ Cliente Bluetooth conectado");
+    bluetoothManager.clearBuffer(); // Limpiar buffer al conectar
+    ultimaActividad = millis();
+  }
+  // Detectar desconexión
+  else if (!conectado && bluetoothWasConnected)
+  {
+    Serial.println("✗ Cliente Bluetooth desconectado");
+    carritoService.procesarDetener(); // Detener por seguridad
+  }
+
+  bluetoothWasConnected = conectado;
+
   // Comandos Bluetooth (baja latencia)
   String btCommand = bluetoothManager.readCommand();
   if (btCommand.length() > 0)
   {
-    ultimoComando = millis(); // Actualizar timestamp
+    ultimaActividad = millis();
     bool success = commandProcessor.processCommand(btCommand);
     if (success)
     {
@@ -51,11 +71,15 @@ void loop()
     }
   }
 
-  // Timeout de seguridad: Si pasan 500ms sin comando, detener
-  if (millis() - ultimoComando > TIMEOUT_COMANDO)
+  // Limpiar buffer si lleva mucho tiempo sin actividad (evita acumulación)
+  if (conectado && (millis() - ultimaActividad > TIMEOUT_INACTIVIDAD))
   {
-    carritoService.procesarDetener();
-    ultimoComando = millis(); // Resetear para no llamar detener constantemente
+    if (bluetoothManager.available())
+    {
+      Serial.println("⚠ Limpiando buffer por inactividad");
+      bluetoothManager.clearBuffer();
+    }
+    ultimaActividad = millis();
   }
 
   // Ciclo de vida del servicio (boost timer, etc.)

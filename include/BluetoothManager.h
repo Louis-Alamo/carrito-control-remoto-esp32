@@ -19,4 +19,10 @@ public:
 
     // Enviar respuesta al dispositivo conectado
     void sendResponse(const String &message);
+
+    // Verificar estado de conexión
+    bool isConnected();
+
+    // Limpiar buffer (útil si se acumulan datos)
+    void clearBuffer();
 };
