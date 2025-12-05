@@ -1,22 +1,20 @@
 # 🏎️ Carrito Control Remoto ESP32
 
-Este proyecto implementa un sistema de control remoto para un carrito robótico utilizando un **ESP32** y comunicación **Bluetooth Serial**. El sistema permite controlar el movimiento (velocidad y dirección) y las luces direccionales del vehículo desde un smartphone.
+Este proyecto implementa un sistema de control remoto para un carrito robótico utilizando un **ESP32** y comunicación **Bluetooth Serial**. El sistema permite controlar el movimiento (velocidad y dirección) del vehículo desde un smartphone.
 
 ## ✨ Características
 
 - **Control Bluetooth de Baja Latencia**: Respuesta rápida (~5-20ms) para un manejo preciso.
 - **Manejo Diferencial**: Control independiente de motores para movimientos suaves y giros sobre el propio eje.
-- **Sistema de Direccionales**: Control de luces indicadoras de giro.
 - **Seguridad Activa**: Detención automática del vehículo si se pierde la conexión Bluetooth.
 - **Protocolo de Comandos Eficiente**: Comandos simples para control total (ej. `V255G0`).
 
 ## 🛠️ Requisitos de Hardware
 
-- **Microcontrolador**: ESP32 Dev Module.
-- **Driver de Motores**: (Implícito en el código, compatible con señales PWM).
-- **Chasis**: Kit de carrito robótico con 2 o 4 motores DC.
-- **Luces**: LEDs para direccionales.
-- **Fuente de Alimentación**: Baterías adecuadas para los motores y el ESP32.
+- **Microcontrolador**: 1 x ESP32.
+- **Motores**: 4 x Motoreductores de 5V.
+- **Driver de Motores**: 1 x L298N.
+- **Fuente de Alimentación**: 6 x Baterías de 1.5V (o similar, dependiendo de la potencia deseada).
 
 ## 💻 Requisitos de Software
 
@@ -28,7 +26,7 @@ Este proyecto implementa un sistema de control remoto para un carrito robótico 
 
 1.  **Clonar el repositorio**:
     ```bash
-    git clone <url-del-repositorio>
+    git clone https://github.com/Louis-Alamo/carrito-control-remoto-esp32.git
     cd carrito-control-remoto-esp32
     ```
 
