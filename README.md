@@ -87,3 +87,9 @@ Para un control más preciso, puedes enviar comandos con el formato `V<velocidad
     -   `CarritoService`: Lógica de control del vehículo.
 -   `include/`: Archivos de cabecera (.h).
 -   `platformio.ini`: Configuración del entorno de compilación.
+-   
+
+## Colaboradores
+
+*   [Carlos Emmanuel](https://github.com/Carlos-Emmanuel-ISC6)
+*   [Louis Alamo](https://github.com/Louis-Alamo)
