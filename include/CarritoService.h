@@ -11,7 +11,6 @@ private:
     // --- PARÁMETROS DE TUNING ---
     const int VEL_ADELANTE = 255;            // Velocidad adelante/atrás
     const int VEL_GIRO = 120;                // Reducción de velocidad al girar
-    const int VEL_CRUCERO = 180;             // Velocidad crucero
     const int VEL_GIRO_CRUCERO = 100;        // Velocidad giro en crucero
     const unsigned long TIEMPO_BOOST = 2000; // 2 segundos de boost
 

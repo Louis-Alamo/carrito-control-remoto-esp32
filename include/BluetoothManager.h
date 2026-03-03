@@ -6,6 +6,7 @@ class BluetoothManager
 private:
     BluetoothSerial SerialBT;
     const char *deviceName = "Carrito_ESP32";
+    String commandBuffer; // Buffer para comandos de múltiples caracteres
 
 public:
     BluetoothManager();

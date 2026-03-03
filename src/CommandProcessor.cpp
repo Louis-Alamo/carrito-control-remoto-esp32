@@ -7,6 +7,13 @@ CommandProcessor::CommandProcessor(CarritoService &service) : service(service)
 
 bool CommandProcessor::processCommand(const String &command)
 {
+    // Comandos de control diferencial: formato V<velocidad>G<giro>
+    // Ejemplo: V255G0, V255G-120, V-200G0
+    if (command.length() > 1 && command[0] == 'V')
+    {
+        return processDifferentialCommand(command);
+    }
+
     // Comandos de UN SOLO CARÁCTER para mínima latencia
     if (command == "W")
     {

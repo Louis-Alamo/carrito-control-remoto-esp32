@@ -58,24 +58,26 @@ Para controlar el carrito, puedes utilizar **cualquier aplicación** que sirva p
 
 ### Lista de Comandos
 
-| Tecla    | Acción            |
-| :------- | :---------------- |
-| **W**    | Acelerar adelante |
-| **S**    | Retroceder        |
-| **A**    | Girar izquierda   |
-| **D**    | Girar derecha     |
-| **STOP** | Detenerse         |
+| Tecla           | Acción                         |
+| :-------------- | :----------------------------- |
+| **W**           | Acelerar adelante              |
+| **S**           | Retroceder                     |
+| **A**           | Girar izquierda                |
+| **D**           | Girar derecha                  |
+| **X** o Espacio | Detenerse                      |
+| **I**           | Toggle direccional izquierda   |
+| **J**           | Toggle direccional derecha     |
 
 ### Comandos Avanzados (Velocidad + Giro)
 
-Para un control más preciso, puedes enviar comandos con el formato `V<velocidad>G<giro>`:
+Para un control más preciso, puedes enviar comandos con el formato `V<velocidad>G<giro>` seguidos de un salto de línea (`\n`):
 
 -   **Velocidad (V)**: `-255` (atrás) a `255` (adelante).
 -   **Giro (G)**: `-255` (izquierda) a `255` (derecha).
 
 **Ejemplos:**
--   `V255G0` (Adelante rápido)
--   `V255G-120` (Adelante girando izquierda)
+-   `V255G0\n` (Adelante rápido)
+-   `V255G-120\n` (Adelante girando izquierda)
 
 > ℹ️ Para más detalles sobre los comandos, consulta el archivo [BLUETOOTH_COMMANDS.md](BLUETOOTH_COMMANDS.md).
 
