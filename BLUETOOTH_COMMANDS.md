@@ -14,26 +14,26 @@ W         → Acelerar adelante
 S         → Retroceder
 A         → Girar izquierda
 D         → Girar derecha
-STOP      → Detener
+X / SPACE → Detener
 ```
 
 ### Direccionales
 ```
-DI        → Toggle direccional izquierda
-DD        → Toggle direccional derecha
+I         → Toggle direccional izquierda
+J         → Toggle direccional derecha
 ```
 
 ### Control diferencial (avanzado)
-Permite acelerar y girar simultáneamente:
+Permite acelerar y girar simultáneamente. Enviar con salto de línea (`\n`):
 ```
-V255G0    → Adelante a máxima velocidad, sin giro
-V255G-120 → Adelante con giro suave izquierda
-V255G120  → Adelante con giro suave derecha
-V-200G0   → Reversa sin giro
-V128G-255 → Media velocidad con giro máximo izquierda
+V255G0\n    → Adelante a máxima velocidad, sin giro
+V255G-120\n → Adelante con giro suave izquierda
+V255G120\n  → Adelante con giro suave derecha
+V-200G0\n   → Reversa sin giro
+V128G-255\n → Media velocidad con giro máximo izquierda
 ```
 
-**Formato:** `V<velocidad>G<giro>`
+**Formato:** `V<velocidad>G<giro>\n`
 - Velocidad: -255 (atrás) a 255 (adelante)
 - Giro: -255 (izquierda) a 255 (derecha)
 
@@ -41,12 +41,6 @@ V128G-255 → Media velocidad con giro máximo izquierda
 
 - `OK` → Comando ejecutado correctamente
 - `ERROR: Comando desconocido` → Comando inválido
-
-## 🌐 Control simultáneo
-
-Puedes usar **WiFi y Bluetooth al mismo tiempo**:
-- **Bluetooth** → Control en tiempo real (lag ~5-20ms)
-- **WiFi** → Interfaz web en http://192.168.4.1
 
 ## 🛠️ Apps recomendadas
 
@@ -64,9 +58,10 @@ Puedes usar **WiFi y Bluetooth al mismo tiempo**:
 W         → El carrito acelera
 (esperar 2 segundos hasta que entre en modo crucero)
 A         → Empieza a girar izquierda mientras acelera
-STOP      → Se detiene completamente
-DI        → Enciende direccional izquierda
-DI        → Apaga direccional izquierda
+X         → Se detiene completamente
+I         → Enciende direccional izquierda
+I         → Apaga direccional izquierda
+V200G-80\n → Control diferencial: avanza con giro suave a la izquierda
 ```
 
 ## ⚡ Ventajas del control Bluetooth
